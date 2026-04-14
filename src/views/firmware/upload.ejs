@@ -1,0 +1,55 @@
+<div class="page-header animate-fade">
+    <div>
+        <div class="breadcrumb">
+            <a href="/projects" style="color: inherit; text-decoration: none;">Projects</a>
+            <span>/</span>
+            <a href="/projects/<%= projectId %>" style="color: inherit; text-decoration: none;">Project Details</a>
+            <span>/</span>
+            <span>Upload</span>
+        </div>
+        <h1 class="page-title">Deploy New Firmware</h1>
+    </div>
+</div>
+
+<div class="card animate-fade" style="max-width: 700px;">
+    <% if (error) { %>
+        <div style="background: rgba(239, 68, 68, 0.1); color: var(--accent-danger); padding: 12px; border-radius: 8px; margin-bottom: 1.5rem;">
+            <i class="fas fa-exclamation-circle"></i> <%= error %>
+        </div>
+    <% } %>
+
+    <form action="/projects/<%= projectId %>/firmware" method="POST" enctype="multipart/form-data">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+            <div class="form-group">
+                <label class="form-label">Version (SemVer)</label>
+                <input type="text" name="version" class="form-control" placeholder="e.g. 1.0.0" required>
+                <small style="color: var(--text-secondary);">Follows x.y.z format</small>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Binary File (.bin)</label>
+                <input type="file" name="firmware" class="form-control" accept=".bin" required>
+                <small style="color: var(--text-secondary);">Max size: 16MB</small>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Release Notes</label>
+            <textarea name="releaseNotes" class="form-control" rows="5" placeholder="What's new in this release?"></textarea>
+        </div>
+
+        <div style="background: rgba(129, 140, 248, 0.05); border: 1px dashed var(--accent-primary); padding: 1rem; border-radius: 10px; margin-top: 2rem;">
+            <p style="font-size: 0.85rem; color: var(--text-secondary);">
+                <i class="fas fa-info-circle" style="color: var(--accent-primary);"></i>
+                <strong>Note:</strong> Uploading will not automatically update your devices. You must <strong>Deploy</strong> the firmware to make it active after upload.
+            </p>
+        </div>
+
+        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <span>Start Upload</span>
+            </button>
+            <a href="/projects/<%= projectId %>" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> | ESP32 OTA Server</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <% if (typeof noLayout === 'undefined' || !noLayout) { %>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <i class="fas fa-microchip"></i>
+                <span>OTA Server</span>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="/dashboard" class="nav-item <%= title === 'Dashboard' ? 'active' : '' %>">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/projects" class="nav-item <%= title.includes('Project') ? 'active' : '' %>">
+                    <i class="fas fa-project-diagram"></i>
+                    <span>Projects</span>
+                </a>
+                <a href="/devices" class="nav-item <%= title.includes('Device') ? 'active' : '' %>">
+                    <i class="fas fa-broadcast-tower"></i>
+                    <span>Fleet Units</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="/auth/logout" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <%- body %>
+        </main>
+    </div>
+    <% } else { %>
+        <%- body %>
+    <% } %>
+
+    <script>
+        // Subtle hover effects and UI logic
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('mousedown', () => {
+                button.style.transform = 'scale(0.95)';
+            });
+            button.addEventListener('mouseup', () => {
+                button.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>

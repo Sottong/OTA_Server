@@ -20,6 +20,7 @@
     "dotenv": "^16.x",
     "ejs": "^3.1.10",
     "express": "^4.21.x",
+    "express-ejs-layouts": "^2.5.1",
     "express-rate-limit": "^7.x",
     "helmet": "^8.x",
     "jsonwebtoken": "^9.x",

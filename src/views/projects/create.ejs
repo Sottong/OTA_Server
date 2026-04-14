@@ -1,0 +1,37 @@
+<div class="page-header animate-fade">
+    <div class="breadcrumb">
+        <a href="/projects" style="color: inherit; text-decoration: none;">Projects</a>
+        <span>/</span>
+        <span>New</span>
+    </div>
+    <h1 class="page-title">Create New Project</h1>
+</div>
+
+<div class="card animate-fade" style="max-width: 600px;">
+    <% if (error) { %>
+        <div style="background: rgba(239, 68, 68, 0.1); color: var(--accent-danger); padding: 12px; border-radius: 8px; margin-bottom: 1.5rem;">
+            <i class="fas fa-exclamation-circle"></i> <%= error %>
+        </div>
+    <% } %>
+
+    <form action="/projects" method="POST">
+        <div class="form-group">
+            <label class="form-label">Project Name</label>
+            <input type="text" name="name" class="form-control" placeholder="e.g. Smart Greenhouse" required autofocus>
+            <small style="color: var(--text-secondary); display: block; margin-top: 4px;">A unique identifyer for your fleet.</small>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Description (Optional)</label>
+            <textarea name="description" class="form-control" rows="4" placeholder="Briefly describe what this project does..."></textarea>
+        </div>
+
+        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i>
+                <span>Save Project</span>
+            </button>
+            <a href="/projects" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>

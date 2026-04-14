@@ -1,0 +1,91 @@
+<div class="page-header animate-fade">
+    <div>
+        <div class="breadcrumb">
+            <a href="/projects/<%= projectId %>" style="color: inherit; text-decoration: none;">Project Details</a>
+            <span>/</span>
+            <span>Settings</span>
+        </div>
+        <h1 class="page-title">Integrations & Webhooks</h1>
+        <p style="color: var(--text-secondary);">Receive real-time alerts on Telegram or other platforms.</p>
+    </div>
+</div>
+
+<div class="grid animate-fade" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+    <!-- Config Form -->
+    <div class="card">
+        <h3 style="margin-bottom: 1.5rem;"><i class="fab fa-telegram" style="color: #0088cc;"></i> Add Telegram Hook</h3>
+        <form action="/projects/<%= projectId %>/webhooks" method="POST">
+            <input type="hidden" name="type" value="TELEGRAM">
+            
+            <div class="form-group">
+                <label class="form-label">Chat ID</label>
+                <input type="text" name="endpoint" class="form-control" placeholder="e.g. -10012345678" required>
+                <small style="color: var(--text-secondary);">The target Chat ID/Group ID.</small>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Bot Token</label>
+                <input type="password" name="token" class="form-control" placeholder="123456789:ABCDefgh..." required>
+                <small style="color: var(--text-secondary);">Your Telegram Bot API Token from @BotFather.</small>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Events to Notify</label>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+                    <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem; cursor: pointer;">
+                        <input type="checkbox" name="events" value="update_success" checked> Success Flash
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem; cursor: pointer;">
+                        <input type="checkbox" name="events" value="update_failed" checked> Failed Flash
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem; cursor: pointer;">
+                        <input type="checkbox" name="events" value="mass_failure" checked> Mass Failure
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem; cursor: pointer;">
+                        <input type="checkbox" name="events" value="new_release" checked> New Release
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem; justify-content: center;">
+                <i class="fas fa-plus"></i> Save Webhook
+            </button>
+        </form>
+    </div>
+
+    <!-- Active Hooks -->
+    <div class="card">
+        <h3 style="margin-bottom: 1.5rem;"><i class="fas fa-link" style="color: var(--accent-secondary);"></i> Active Webhooks</h3>
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <% webhooks.forEach(wh => { %>
+                <div style="background: rgba(255,255,255,0.03); border: var(--glass-border); padding: 1.25rem; border-radius: 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <i class="fab fa-telegram" style="color: #0088cc; font-size: 1.5rem;"></i>
+                            <div>
+                                <div style="font-weight: 600;">Telegram: <%= wh.endpoint %></div>
+                                <div style="font-size: 0.75rem; color: var(--text-secondary);">
+                                    Events: <%= wh.events.join(', ') %>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <form action="/projects/<%= projectId %>/webhooks/<%= wh.id %>/test" method="POST">
+                                <button class="btn btn-sm btn-secondary" title="Test notification"><i class="fas fa-vial"></i></button>
+                            </form>
+                            <form action="/projects/<%= projectId %>/webhooks/<%= wh.id %>/delete" method="POST">
+                                <button class="btn btn-sm btn-danger" style="background: none; border: none; opacity: 0.6;"><i class="fas fa-trash-alt"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+
+            <% if (webhooks.length === 0) { %>
+                <div style="text-align: center; padding: 2rem; color: var(--text-secondary); background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px dashed var(--border-color);">
+                    No webhooks configured yet.
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>

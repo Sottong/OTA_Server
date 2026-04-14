@@ -4,7 +4,7 @@ const ApiResponse = require('../utils/apiResponse');
 class AuthController {
   // GET /auth/login - Render login page
   renderLogin(req, res) {
-    res.render('auth/login', { title: 'Login', error: null });
+    res.render('auth/login', { title: 'Login', error: null, layout: false });
   }
 
   // POST /auth/login - Handle login

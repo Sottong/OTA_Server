@@ -1,0 +1,13 @@
+<div class="animate-fade" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 70vh; text-align: center;">
+    <div style="font-size: 5rem; color: var(--accent-danger); margin-bottom: 2rem;">
+        <i class="fas fa-exclamation-triangle"></i>
+    </div>
+    <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">System Alert</h1>
+    <p style="font-size: 1.2rem; color: var(--text-secondary); max-width: 500px; margin-bottom: 2rem;">
+        <%= typeof message !== 'undefined' ? message : 'An unexpected error occurred while processing your request.' %>
+    </p>
+    <div style="display: flex; gap: 1rem;">
+        <a href="/" class="btn btn-primary">Return Dashboard</a>
+        <button onclick="window.history.back()" class="btn btn-secondary">Go Back</button>
+    </div>
+</div>

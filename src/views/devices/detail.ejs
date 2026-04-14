@@ -1,0 +1,85 @@
+<div class="page-header animate-fade">
+    <div>
+        <div class="breadcrumb">
+            <a href="/projects/<%= device.projectId %>/devices" style="color: inherit; text-decoration: none;">Fleet Units</a>
+            <span>/</span>
+            <span>Unit Details</span>
+        </div>
+        <h1 class="page-title">Unit: <%= device.macAddress %></h1>
+    </div>
+</div>
+
+<div class="grid animate-fade" style="display: grid; grid-template-columns: 1fr 2fr; gap: 1.5rem;">
+    <div class="card">
+        <h3 style="margin-bottom: 1.5rem;"><i class="fas fa-info-circle"></i> Device Info</h3>
+        <div style="display: flex; flex-direction: column; gap: 15px; font-size: 0.9rem;">
+            <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-secondary);">Status</span>
+                <span class="badge <%= device.isOnline ? 'badge-success' : 'badge-secondary' %>">
+                    <%= device.isOnline ? 'CONNECTED' : 'OFFLINE' %>
+                </span>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-secondary);">IP Address</span>
+                <span><%= device.ipAddress || 'N/A' %></span>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-secondary);">Current Rom</span>
+                <span class="badge badge-primary">v<%= device.currentVersion || '0.0.0' %></span>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-secondary);">Project</span>
+                <span><%= device.project.name %></span>
+            </div>
+            <div style="border-top: var(--glass-border); pt: 15px; mt: 5px; padding-top: 15px;">
+                <div style="color: var(--text-secondary); margin-bottom: 5px;">Last Activity</div>
+                <div style="font-weight: 600;"><%= new Date(device.lastCheckedAt).toLocaleString() %></div>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <span style="color: var(--text-secondary);">First Seen</span>
+                <span><%= new Date(device.createdAt).toLocaleDateString() %></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3 style="margin-bottom: 1.5rem;"><i class="fas fa-history"></i> Log History (Last 50)</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Event</th>
+                        <th>Vers. Target</th>
+                        <th>Details</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% device.updateLogs.forEach(log => { %>
+                        <tr>
+                            <td>
+                                <% if (log.status === 'SUCCESS') { %>
+                                    <span class="badge badge-success">FLASH OK</span>
+                                <% } else if (log.status === 'FAILED') { %>
+                                    <span class="badge badge-danger">FAILED</span>
+                                <% } else if (log.status === 'DOWNLOADING') { %>
+                                    <span class="badge badge-primary">TRANSFER</span>
+                                <% } else { %>
+                                    <span class="badge badge-secondary"><%= log.status %></span>
+                                <% } %>
+                            </td>
+                            <td>v<%= log.firmware.version %></td>
+                            <td style="font-size: 0.8rem; color: var(--text-secondary); max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                <%= log.message || '-' %>
+                            </td>
+                            <td style="font-size: 0.8rem; color: var(--text-secondary);"><%= new Date(log.createdAt).toLocaleString() %></td>
+                        </tr>
+                    <% }) %>
+                    <% if (device.updateLogs.length === 0) { %>
+                        <tr><td colspan="4" style="text-align: center; color: var(--text-secondary);">No logs found for this device.</td></tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

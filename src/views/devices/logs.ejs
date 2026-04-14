@@ -1,0 +1,55 @@
+<div class="page-header animate-fade">
+    <div>
+        <div class="breadcrumb">
+            <a href="/projects/<%= projectId %>/devices" style="color: inherit; text-decoration: none;">Fleet Units</a>
+            <span>/</span>
+            <span>Logs</span>
+        </div>
+        <h1 class="page-title">Global Update Logs</h1>
+    </div>
+</div>
+
+<div class="card animate-fade">
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Unit (MAC)</th>
+                    <th>Target Version</th>
+                    <th>Action</th>
+                    <th>Result / Msg</th>
+                    <th>Timestamp</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% logs.forEach(log => { %>
+                    <tr>
+                        <td style="font-family: monospace;"><%= log.device.macAddress %></td>
+                        <td><span class="badge badge-primary">v<%= log.firmware.version %></span></td>
+                        <td><%= log.status %></td>
+                        <td style="font-size: 0.85rem; color: var(--text-secondary);">
+                            <%= log.message || '-' %>
+                        </td>
+                        <td style="font-size: 0.85rem; color: var(--text-secondary);">
+                            <%= new Date(log.createdAt).toLocaleString() %>
+                        </td>
+                    </tr>
+                <% }) %>
+                <% if (logs.length === 0) { %>
+                    <tr><td colspan="5" style="text-align: center; color: var(--text-secondary); padding: 3rem;">No logs found.</td></tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <div style="margin-top: 2rem; display: flex; justify-content: center; gap: 10px;">
+        <% if (page > 1) { %>
+            <a href="?page=<%= page - 1 %>" class="btn btn-secondary">Previous</a>
+        <% } %>
+        <span style="display: flex; align-items: center; padding: 0 1rem; color: var(--text-secondary);">Page <%= page %></span>
+        <% if (logs.length === 50) { %>
+            <a href="?page=<%= page + 1 %>" class="btn btn-secondary">Next</a>
+        <% } %>
+    </div>
+</div>

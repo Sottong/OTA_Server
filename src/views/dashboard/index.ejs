@@ -1,0 +1,103 @@
+<div class="page-header animate-fade">
+    <div>
+        <h1 class="page-title">Dashboard Overview</h1>
+        <p style="color: var(--text-secondary);"><%= (new Date()).toDateString() %></p>
+    </div>
+    <div class="header-actions">
+        <a href="/projects/create" class="btn btn-primary">
+            <i class="fas fa-plus"></i>
+            <span>New Project</span>
+        </a>
+    </div>
+</div>
+
+<div class="stats-grid animate-fade">
+    <div class="card stat-card">
+        <div class="stat-label">Total Projects</div>
+        <div class="stat-value"><%= totalProjects %></div>
+        <div style="color: var(--accent-primary); font-size: 0.8rem;">
+            <i class="fas fa-folder"></i> Active workspaces
+        </div>
+    </div>
+    <div class="card stat-card">
+        <div class="stat-label">Connected Devices</div>
+        <div class="stat-value"><%= totalDevices %></div>
+        <div style="color: var(--accent-secondary); font-size: 0.8rem;">
+            <i class="fas fa-broadcast-tower"></i> Registered MACs
+        </div>
+    </div>
+    <div class="card stat-card">
+        <div class="stat-label">Firmware Releases</div>
+        <div class="stat-value"><%= totalFirmwares %></div>
+        <div style="color: var(--accent-success); font-size: 0.8rem;">
+            <i class="fas fa-file-code"></i> Total binaries
+        </div>
+    </div>
+</div>
+
+<div class="grid" style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem;" class="animate-fade">
+    <!-- Recent Activity -->
+    <div class="card">
+        <h3 style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-history" style="color: var(--accent-primary);"></i>
+            Recent Activity
+        </h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Device</th>
+                        <th>Project</th>
+                        <th>Version</th>
+                        <th>Status</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% recentLogs.forEach(log => { %>
+                        <tr>
+                            <td style="font-family: monospace; font-size: 0.85rem;"><%= log.device.macAddress %></td>
+                            <td>Project ID: <%= log.device.projectId.substring(0,8) %>...</td>
+                            <td><span class="badge badge-primary">v<%= log.firmware.version %></span></td>
+                            <td>
+                                <span class="badge <%= log.status === 'SUCCESS' ? 'badge-success' : (log.status === 'FAILED' ? 'badge-danger' : 'badge-warning') %>">
+                                    <%= log.status %>
+                                </span>
+                            </td>
+                            <td style="color: var(--text-secondary); font-size: 0.8rem;"><%= new Date(log.createdAt).toLocaleTimeString() %></td>
+                        </tr>
+                    <% }) %>
+                    <% if (recentLogs.length === 0) { %>
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: var(--text-secondary); padding: 2rem;">No recent activities found</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Project List (Compact) -->
+    <div class="card">
+        <h3 style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-folder-open" style="color: var(--accent-secondary);"></i>
+            Latest Projects
+        </h3>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+            <% projects.forEach(project => { %>
+                <a href="/projects/<%= project.id %>" style="text-decoration: none; color: inherit;">
+                    <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 10px; border: 1px solid transparent; transition: var(--transition);" onmouseover="this.style.borderColor='var(--accent-primary)'; this.style.background='var(--bg-hover)'" onmouseout="this.style.borderColor='transparent'; this.style.background='rgba(255,255,255,0.03)'">
+                        <div style="font-weight: 600; display: flex; justify-content: space-between;">
+                            <%= project.name %>
+                            <span style="font-size: 0.75rem; color: var(--text-secondary);"><%= project._count.devices %> devices</span>
+                        </div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px;">
+                            Active: <%= project.firmwares[0] ? 'v' + project.firmwares[0].version : 'None' %>
+                        </div>
+                    </div>
+                </a>
+            <% }) %>
+            <a href="/projects" class="btn btn-secondary" style="margin-top: 1rem; justify-content: center;">View All Projects</a>
+        </div>
+    </div>
+</div>

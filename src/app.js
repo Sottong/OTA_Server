@@ -5,6 +5,7 @@ const cors = require('cors');
 const compression = require('compression');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
+const expressLayouts = require('express-ejs-layouts');
 const routes = require('./routes');
 const errorHandler = require('./middleware/errorHandler');
 const logger = require('./utils/logger');
@@ -38,6 +39,8 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 // View engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+app.use(expressLayouts);
+app.set('layout', 'layouts/main');
 
 // Routes
 app.use(routes);

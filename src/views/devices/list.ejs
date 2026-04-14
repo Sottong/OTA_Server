@@ -1,0 +1,52 @@
+<div class="page-header animate-fade">
+    <div>
+        <h1 class="page-title">Fleet Monitoring</h1>
+        <p style="color: var(--text-secondary);">Total devices: <%= stats.total %> | Online: <%= stats.online %></p>
+    </div>
+    <div style="display: flex; gap: 8px;">
+        <a href="/projects/<%= projectId %>/devices/logs" class="btn btn-secondary">
+            <i class="fas fa-list"></i> Update Logs
+        </a>
+    </div>
+</div>
+
+<div class="card animate-fade">
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Unit Status</th>
+                    <th>MAC Address</th>
+                    <th>IP Address</th>
+                    <th>Cur. Version</th>
+                    <th>Last Active</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% devices.forEach(device => { %>
+                    <tr>
+                        <td>
+                            <span class="badge <%= device.isOnline ? 'badge-success' : 'badge-secondary' %>">
+                                <i class="fas fa-circle" style="font-size: 0.6rem; margin-right: 4px;"></i>
+                                <%= device.isOnline ? 'ONLINE' : 'OFFLINE' %>
+                            </span>
+                        </td>
+                        <td style="font-family: monospace; font-weight: 600;"><%= device.macAddress %></td>
+                        <td style="color: var(--text-secondary); font-size: 0.85rem;"><%= device.ipAddress || 'Unknown' %></td>
+                        <td>
+                            <span class="badge badge-primary">v<%= device.currentVersion || '0.0.0' %></span>
+                        </td>
+                        <td style="font-size: 0.85rem; color: var(--text-secondary);"><%= new Date(device.lastCheckedAt).toLocaleString() %></td>
+                        <td>
+                            <a href="/projects/<%= projectId %>/devices/<%= device.id %>" class="btn btn-sm btn-secondary" style="font-size: 0.7rem; padding: 4px 8px;">Inspect</a>
+                        </td>
+                    </tr>
+                <% }) %>
+                <% if (devices.length === 0) { %>
+                    <tr><td colspan="6" style="text-align: center; color: var(--text-secondary); padding: 3rem;">No devices have reported to this project yet.</td></tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
