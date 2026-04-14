@@ -32,5 +32,8 @@
   "devDependencies": {
     "nodemon": "^3.x",
     "prisma": "^6.x"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
   }
 }
