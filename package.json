@@ -24,8 +24,9 @@
     "jsonwebtoken": "^9.x",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
-    "winston": "^3.x",
-    "node-fetch": "^3.x"
+    "node-fetch": "^3.x",
+    "uuid": "^13.0.0",
+    "winston": "^3.x"
   },
   "devDependencies": {
     "nodemon": "^3.x",
