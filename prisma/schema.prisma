@@ -1,0 +1,152 @@
+aagenerator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==================== MODELS ====================
+
+model User {
+  id        String   @id @default(uuid())
+  username  String   @unique
+  email     String   @unique
+  password  String   // bcrypt hashed
+  role      Role     @default(ADMIN)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+enum Role {
+  ADMIN
+  VIEWER
+}
+
+model Project {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  apiKey      String   @unique @default(uuid()) // API Key untuk device auth
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  firmwares       Firmware[]
+  devices         Device[]
+  allowedMacs     AllowedMac[]
+  webhookConfigs  WebhookConfig[]
+  rolloutGroups   RolloutGroup[]
+
+  @@map("projects")
+}
+
+model Firmware {
+  id           String        @id @default(uuid())
+  projectId    String
+  version      String        // Semantic versioning: "1.0.0", "1.2.3"
+  releaseNotes String?
+  filePath     String        // Path to .bin file on disk
+  fileSize     Int           // File size in bytes
+  md5Checksum  String        // MD5 hash of .bin file
+  isActive     Boolean       @default(false) // Only ONE firmware per project can be active
+  createdAt    DateTime      @default(now())
+
+  project      Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  updateLogs   UpdateLog[]
+
+  @@unique([projectId, version]) // Satu project tidak boleh punya versi duplikat
+  @@map("firmwares")
+}
+
+model Device {
+  id              String   @id @default(uuid())
+  macAddress      String
+  projectId       String
+  currentVersion  String?  // Versi firmware saat ini di device
+  lastCheckedAt   DateTime? // Terakhir kali device cek update
+  lastUpdatedAt   DateTime? // Terakhir kali device berhasil update
+  ipAddress       String?  // IP address device saat check-in
+  isOnline        Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  project         Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  updateLogs      UpdateLog[]
+
+  @@unique([macAddress, projectId]) // Satu MAC hanya bisa 1x per project
+  @@map("devices")
+}
+
+model AllowedMac {
+  id        String   @id @default(uuid())
+  macAddress String
+  projectId  String
+  label      String?  // Nama/label device (opsional)
+  createdAt  DateTime @default(now())
+
+  project    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([macAddress, projectId])
+  @@map("allowed_macs")
+}
+
+model RolloutGroup {
+  id          String   @id @default(uuid())
+  name        String   // e.g., "Beta Testers", "Production"
+  projectId   String
+  macAddresses String[] // Array of MAC addresses in this group
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([name, projectId])
+  @@map("rollout_groups")
+}
+
+model UpdateLog {
+  id         String       @id @default(uuid())
+  deviceId   String
+  firmwareId String
+  status     UpdateStatus
+  message    String?      // Error message jika gagal
+  createdAt  DateTime     @default(now())
+
+  device     Device       @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  firmware   Firmware     @relation(fields: [firmwareId], references: [id], onDelete: Cascade)
+
+  @@map("update_logs")
+}
+
+enum UpdateStatus {
+  CHECKING    // Device sedang cek update
+  DOWNLOADING // Device sedang download
+  SUCCESS     // Update berhasil
+  FAILED      // Update gagal
+  SKIPPED     // Device skip update (sudah versi terbaru)
+}
+
+model WebhookConfig {
+  id          String      @id @default(uuid())
+  projectId   String
+  type        WebhookType
+  endpoint    String      // Telegram chat_id atau Email address atau URL
+  token       String?     // Bot token untuk Telegram
+  isActive    Boolean     @default(true)
+  events      String[]    // ["update_success", "update_failed", "new_release", "mass_failure"]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  project     Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@map("webhook_configs")
+}
+
+enum WebhookType {
+  TELEGRAM
+  EMAIL
+  CUSTOM_URL
+}

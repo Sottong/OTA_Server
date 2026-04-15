@@ -22,4 +22,4 @@ RUN mkdir -p uploads logs
 EXPOSE 3000
 
 # Start
-CMD ["sh", "-c", "npx prisma migrate deploy && npx prisma db seed && node src/server.js"]
+CMD ["sh", "-c", "npx prisma db push && npx prisma db seed && node src/server.js"]
