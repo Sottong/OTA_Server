@@ -20,4 +20,7 @@ module.exports = {
   MAX_FILE_SIZE: parseInt(process.env.MAX_FILE_SIZE, 10) || 16 * 1024 * 1024,
   TELEGRAM_BOT_TOKEN: process.env.TELEGRAM_BOT_TOKEN || '',
   TELEGRAM_DEFAULT_CHAT_ID: process.env.TELEGRAM_DEFAULT_CHAT_ID || '',
+  ADMIN_USERNAME: process.env.ADMIN_USERNAME || 'admin',
+  ADMIN_PASSWORD: process.env.ADMIN_PASSWORD || 'admin123',
+  ADMIN_EMAIL: process.env.ADMIN_EMAIL || 'admin@example.com',
 };
