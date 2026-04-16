@@ -4,55 +4,13 @@ services:
     container_name: ota-server
     restart: unless-stopped
     env_file: .env
-    ports:
-      - "3001:3000"
     volumes:
       - ./uploads:/app/uploads
       - ./logs:/app/logs
-    depends_on:
-      db:
-        condition: service_healthy
     networks:
-      - ota-network
-
-  db:
-    image: postgres:16-alpine
-    container_name: ota-db
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: ota_server
-      POSTGRES_USER: ota_user
-      POSTGRES_PASSWORD: ota_password
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ota_user -d ota_server"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    networks:
-      - ota-network
-
-  nginx:
-    image: nginx:alpine
-    container_name: ota-nginx
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/ssl:/etc/nginx/ssl:ro
-    depends_on:
-      - app
-    networks:
-      - ota-network
-
-volumes:
-  postgres_data:
+      - shared_network
 
 networks:
-  ota-network:
-    driver: bridge
+  shared_network:
+    name: db-network
+    external: true
